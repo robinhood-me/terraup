@@ -1,0 +1,38 @@
+yum -y update
+yum -y install httpd
+echo "<h1>Hello, World and Robin</h1>" > /var/www/html/index.html
+service httpd start
+chkconfig httpd on
+
+resource "aws_instance" "web" {
+  # ...
+
+  # Establishes connection to be used by all
+  # generic remote provisioners (i.e. file/remote-exec)
+  connection {
+    type     = "ssh"
+    user     = "root"
+    password = var.root_password
+    host     = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "puppet apply",
+      "consul join ${aws_instance.web.private_ip}",
+    ]
+  }
+}
+
+#!/bin/bash
+ssh -i ~/.ssh/terr_id_rsa ubuntu@ec2-52-41-74-94.us-west-2.compute.amazonaws.com
+
+            sudo apt-get update
+
+
+#!/bin/bash
+  echo "*** Installing apache2"
+  sudo apt update -y
+  sudo apt install apache2 -y
+  echo "*** Completed Installing apache2"
+  EOF
